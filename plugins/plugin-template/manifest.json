@@ -1,0 +1,21 @@
+{
+  "id": "my-plugin",
+  "name": "My Custom Plugin",
+  "version": "1.0.0",
+  "type": "editor",
+  "description": "A template for building Reframe plugins. See docs/plugins.md for the full guide.",
+  "author": "Your Name",
+  "license": "MIT",
+  "entry_url": "https://example.com/my-plugin",
+  "accepts": ["image/jpeg", "image/png", "image/webp"],
+  "returns": ["image/jpeg", "image/png"],
+  "icon": "icon.svg",
+  "settings": {
+    "api_key": {
+      "type": "string",
+      "label": "API Key",
+      "description": "Your plugin API key (if required)",
+      "required": false
+    }
+  }
+}

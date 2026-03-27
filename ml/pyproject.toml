@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "reframe-ml"
+version = "0.0.1"
+description = "Reframe ML Sidecar — Face recognition, visual search, and OCR"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "onnxruntime>=1.19.0",
+    "insightface>=0.7.3",
+    "numpy>=1.26.0",
+    "Pillow>=10.4.0",
+    "pytesseract>=0.3.10",
+    "httpx>=0.27.0",
+    "open-clip-torch>=2.26.0",
+    "scikit-learn>=1.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.6.0",
+    "black>=24.0",
+    "mypy>=1.11.0",
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24.0",
+]
+gpu = [
+    "onnxruntime-gpu>=1.19.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

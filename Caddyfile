@@ -1,0 +1,41 @@
+# Reframe Caddyfile
+# Replace photos.yourdomain.com with your actual domain
+# Caddy will automatically provision HTTPS via Let's Encrypt
+
+photos.yourdomain.com {
+    reverse_proxy reframe:2283
+
+    # Increase upload size limit for large videos
+    request_body {
+        max_size 500MB
+    }
+
+    # WebSocket support
+    @websocket {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websocket reframe:2283
+
+    # Cache static assets
+    @static {
+        path *.js *.css *.png *.jpg *.jpeg *.webp *.svg *.woff2
+    }
+    header @static Cache-Control "public, max-age=31536000, immutable"
+
+    # Security headers
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+    }
+
+    # Gzip compression
+    encode gzip
+
+    log {
+        output file /var/log/caddy/reframe.log
+        format console
+    }
+}

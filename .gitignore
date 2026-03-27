@@ -1,0 +1,69 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+server/tmp/
+server/vendor/
+
+# Python
+ml/venv/
+ml/__pycache__/
+ml/**/__pycache__/
+ml/*.egg-info/
+ml/.mypy_cache/
+ml/.ruff_cache/
+
+# ML Models (downloaded at runtime)
+ml/models/*.onnx
+ml/models/*.bin
+ml/models/*.pt
+
+# Node
+node_modules/
+mobile/node_modules/
+web/node_modules/
+.expo/
+mobile/.expo/
+
+# Build outputs
+server/reframe
+web/dist/
+mobile/ios/build/
+mobile/android/app/build/
+mobile/android/.gradle/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Docker
+docker-compose.override.yml
+
+# Data (runtime)
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+*.coverprofile
+htmlcov/
+.coverage
+
+# Temp
+tmp/
+temp/

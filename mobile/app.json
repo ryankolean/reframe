@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Reframe",
+    "slug": "reframe",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#111827"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.reframe.app",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Reframe needs access to your photos to back them up to your server.",
+        "NSPhotoLibraryAddUsageDescription": "Reframe needs permission to save photos to your library.",
+        "NSCameraUsageDescription": "Reframe can capture photos directly into your library.",
+        "UIBackgroundModes": ["fetch", "processing"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#111827"
+      },
+      "package": "com.reframe.app",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-media-library"
+    ],
+    "scheme": "reframe"
+  }
+}

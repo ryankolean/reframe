@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  reframe:
+    image: reframe/reframe:latest
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: reframe-server
+    restart: unless-stopped
+    ports:
+      - "2283:2283"
+    environment:
+      - REFRAME_DB_PATH=${REFRAME_DB_PATH:-/data/database/reframe.db}
+      - REFRAME_STORAGE_PATH=${REFRAME_STORAGE_PATH:-/data}
+      - REFRAME_STORAGE_BACKEND=${REFRAME_STORAGE_BACKEND:-filesystem}
+      - REFRAME_ML_URL=${REFRAME_ML_URL:-http://reframe-ml:8100}
+      - REFRAME_ML_ENABLED=${REFRAME_ML_ENABLED:-true}
+      - REFRAME_REDIS_URL=${REFRAME_REDIS_URL:-redis://reframe-redis:6379}
+      - REFRAME_JWT_SECRET=${JWT_SECRET}
+      - REFRAME_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - REFRAME_HOST=${REFRAME_HOST:-0.0.0.0}
+      - REFRAME_PORT=${REFRAME_PORT:-2283}
+      - REFRAME_LOG_LEVEL=${REFRAME_LOG_LEVEL:-info}
+      - REFRAME_THUMBNAIL_QUALITY=${REFRAME_THUMBNAIL_QUALITY:-80}
+      - REFRAME_VIDEO_TRANSCODE_ENABLED=${REFRAME_VIDEO_TRANSCODE_ENABLED:-true}
+      - REFRAME_VIDEO_HW_ACCEL=${REFRAME_VIDEO_HW_ACCEL:-auto}
+      - REFRAME_MAX_UPLOAD_SIZE_MB=${REFRAME_MAX_UPLOAD_SIZE_MB:-500}
+      - REFRAME_TRASH_AUTO_DELETE_DAYS=${REFRAME_TRASH_AUTO_DELETE_DAYS:-30}
+      - REFRAME_DEFAULT_STORAGE_QUOTA_GB=${REFRAME_DEFAULT_STORAGE_QUOTA_GB:-0}
+      - REFRAME_REGISTRATION_ENABLED=${REFRAME_REGISTRATION_ENABLED:-false}
+      - REFRAME_MAP_TILE_PROVIDER=${REFRAME_MAP_TILE_PROVIDER:-osm}
+      - REFRAME_GEOCODING_PROVIDER=${REFRAME_GEOCODING_PROVIDER:-nominatim}
+      - TZ=${TZ:-America/Detroit}
+    volumes:
+      - reframe-data:/data
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - reframe-ml
+      - reframe-redis
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:2283/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  reframe-ml:
+    image: reframe/reframe-ml:latest
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    container_name: reframe-ml
+    restart: unless-stopped
+    environment:
+      - REFRAME_ML_WORKERS=2
+      - REFRAME_ML_DEVICE=${REFRAME_ML_DEVICE:-cpu}
+      - REFRAME_ML_FACE_RECOGNITION=${REFRAME_ML_FACE_RECOGNITION:-true}
+      - REFRAME_ML_CLIP_SEARCH=${REFRAME_ML_CLIP_SEARCH:-true}
+      - REFRAME_ML_OCR=${REFRAME_ML_OCR:-true}
+    volumes:
+      - reframe-models:/models
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  reframe-redis:
+    image: redis:7-alpine
+    container_name: reframe-redis
+    restart: unless-stopped
+    volumes:
+      - reframe-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  reframe-data:
+    driver: local
+  reframe-models:
+    driver: local
+  reframe-redis:
+    driver: local
